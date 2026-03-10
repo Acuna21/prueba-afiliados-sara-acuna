@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -8,7 +8,7 @@ import { signal } from '@angular/core';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
@@ -50,12 +50,10 @@ export class LoginComponent implements OnInit {
     const { email, password } = this.loginForm.value;
 
     setTimeout(() => {
-      if (email === 'afiliado@prueba.com' && password === 'Prueba2024*') {
-        const user = {
-          email,
-          nombre: 'Afiliado Prueba'
-        };
-        this.authService.login(user);
+      const result = this.authService.validateCredentials(email, password);
+      
+      if (result.valid && result.user) {
+        this.authService.login(result.user);
         this.router.navigate(['/dashboard']);
       } else {
         this.errorMessage.set('Credenciales incorrectas. Inténtalo de nuevo');
