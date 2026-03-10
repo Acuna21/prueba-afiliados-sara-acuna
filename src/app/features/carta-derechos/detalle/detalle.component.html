@@ -1,0 +1,117 @@
+<div class="min-h-screen bg-gray-50">
+  <app-navbar></app-navbar>
+
+  <main class="max-w-7xl mx-auto px-4 py-8">
+    <div class="max-w-2xl">
+
+      <div class="mb-8 flex justify-between items-center">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">Detalles de la Solicitud</h1>
+          @if (carta()) {
+            <p class="text-gray-600 mt-2">
+              {{ carta()?.numeroSolicitud }}
+            </p>
+          }
+        </div>
+        <app-button
+          label="← Volver"
+          variant="secondary"
+          (onClick)="onBack()"
+        ></app-button>
+      </div>
+
+
+      @if (carta()) {
+        <div class="bg-white rounded-lg shadow-md p-8 space-y-6">
+          <div class="flex items-center gap-4 pb-6 border-b border-gray-200">
+            <span class="text-2xl">📋</span>
+            <div>
+              <p class="text-sm text-gray-600">Estado actual</p>
+              <app-badge
+                [value]="carta()!.estado"
+                type="estado"
+              ></app-badge>
+            </div>
+          </div>
+          <!-- Datos Básicos -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <h2 class="text-lg font-semibold text-gray-900 mb-4">Datos Básicos</h2>
+              <div class="space-y-4">
+                <div>
+                  <p class="text-sm text-gray-600 font-medium">Número de Solicitud</p>
+                  <p class="text-gray-900 font-mono">{{ carta()?.numeroSolicitud }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-600 font-medium">Tipo de Solicitud</p>
+                  <p class="text-gray-900">{{ carta()?.tipoSolicitud }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-600 font-medium">Fecha de Solicitud</p>
+                  <p class="text-gray-900">{{ carta()?.fechaSolicitud | date: 'dd/MM/yyyy HH:mm' }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-600 font-medium">Estado</p>
+                  <app-badge
+                    [value]="carta()!.estado"
+                    type="estado"
+                  ></app-badge>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h2 class="text-lg font-semibold text-gray-900 mb-4">Datos del Afiliado</h2>
+              <div class="space-y-4">
+                <div>
+                  <p class="text-sm text-gray-600 font-medium">Nombre</p>
+                  <p class="text-gray-900">{{ carta()?.nombreAfiliado }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-600 font-medium">Número de Documento</p>
+                  <p class="text-gray-900 font-mono">{{ carta()?.numeroDocumento }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-600 font-medium">ID</p>
+                  <p class="text-gray-900 font-mono">#{{ carta()?.id }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pt-6 border-t border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Descripción</h2>
+            <p class="text-gray-700 whitespace-pre-wrap">{{ carta()?.descripcion }}</p>
+          </div>
+          @if (carta()?.observaciones) {
+            <div class="pt-6 border-t border-gray-200">
+              <h2 class="text-lg font-semibold text-gray-900 mb-4">Observaciones</h2>
+              <p class="text-gray-700 whitespace-pre-wrap">{{ carta()?.observaciones }}</p>
+            </div>
+          }
+          <div class="pt-6 border-t border-gray-200 flex gap-4">
+            <app-button
+              label="Editar"
+              variant="primary"
+              (onClick)="onEdit()"
+            ></app-button>
+            <app-button
+              label="Volver"
+              variant="secondary"
+              (onClick)="onBack()"
+            ></app-button>
+          </div>
+        </div>
+      }
+
+      @if (!carta()) {
+        <div class="bg-white rounded-lg shadow-md p-8 text-center">
+          <p class="text-gray-600">No se encontró la solicitud solicitada</p>
+          <app-button
+            label="Volver al listado"
+            variant="secondary"
+            (onClick)="onBack()"
+          ></app-button>
+        </div>
+      }
+    </div>
+  </main>
+</div>
