@@ -4,11 +4,12 @@ import { Router } from '@angular/router';
 import { signal } from '@angular/core';
 import { interval, Subscription, startWith } from 'rxjs';
 import { DASHBOARD_MODULES } from './dashboard.constants';
+import { NavbarComponent } from '../../shared/components/navbar.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [],
+  imports: [NavbarComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })

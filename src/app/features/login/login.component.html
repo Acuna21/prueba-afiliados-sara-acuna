@@ -1,5 +1,6 @@
-<div class="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center p-4">
-  <div class="bg-white rounded-lg shadow-2xl w-full max-w-md p-8">
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-slate-200 flex items-center justify-center p-4">
+
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-10 border border-slate-200">
 
     <div class="text-center mb-8">
       <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-xl bg-indigo-600 text-white text-2xl shadow-md">
@@ -17,8 +18,7 @@
 
     @if (errorMessage()) {
       <div
-        class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm"
-        >
+        class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
         {{ errorMessage() }}
       </div>
     }
@@ -36,55 +36,63 @@
           type="email"
           formControlName="email"
           placeholder="correo@ejemplo.com"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
-          [class.border-red-500]="email?.invalid && email?.touched"
-          />
+          class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
+          [class.border-red-500]="email?.invalid && email?.touched"/>
+
           @if (email?.invalid && email?.touched) {
             <p
-              class="mt-1 text-sm text-red-600"
-              >
+              class="mt-1 text-sm text-red-600">
               @if (email?.errors?.['required']) {
-                <span>El correo es requerido</span>
+                <span>
+                  El correo es requerido
+                </span>
               }
               @if (email?.errors?.['email']) {
-                <span>Correo electrónico no válido</span>
+                <span>
+                  Correo electrónico no válido
+                </span>
               }
             </p>
           }
         </div>
 
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+          <label
+            for="password"
+            class="block text-sm font-medium text-slate-700 mb-2">
             Contraseña
           </label>
+
           <div class="relative">
             <input
               id="password"
               [type]="showPassword() ? 'text' : 'password'"
               formControlName="password"
               placeholder="••••••••"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
+              class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
               [class.border-red-500]="password?.invalid && password?.touched"
               />
+
               <button
                 type="button"
                 (click)="togglePasswordVisibility()"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                >
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition">
                 @if (!showPassword()) {
                   <span>👁️</span>
                 }
                 @if (showPassword()) {
-                  <span>👁️‍🗨️</span>
+                  <span>🙈</span>
                 }
               </button>
             </div>
+
             @if (password?.invalid && password?.touched) {
               <p
-                class="mt-1 text-sm text-red-600"
-                >
+                class="mt-1 text-sm text-red-600">
                 @if (password?.errors?.['required']) {
-                  <span>La contraseña es requerida</span>
+                  <span>
+                    La contraseña es requerida
+                  </span>
                 }
               </p>
             }
@@ -93,25 +101,46 @@
           <button
             type="submit"
             [disabled]="loginForm.invalid || isLoading()"
-            class="w-full mt-6 px-4 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 active:bg-indigo-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-            >
+            class="w-full mt-4 px-4 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 active:bg-indigo-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm">
+
             @if (isLoading()) {
               <span class="flex items-center justify-center gap-2">
                 <span class="animate-spin">⌛</span>
                 Ingresando...
               </span>
             }
+
             @if (!isLoading()) {
-              <span>Ingresar</span>
+              <span>
+                Ingresar
+              </span>
             }
           </button>
         </form>
 
-        <!-- Demo Credentials Info -->
-        <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
-          <p class="font-semibold mb-2">📝 Credenciales de Prueba:</p>
-          <p>Email: <code class="bg-blue-100 px-2 py-1 rounded">afiliado{{ '@' }}prueba.com</code></p>
-          <p>Clave: <code class="bg-blue-100 px-2 py-1 rounded">Prueba2024*</code></p>
+        <!-- DEMO CREDENTIALS -->
+        <div class="mt-6 p-4 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-600">
+
+          <p class="font-semibold mb-2">
+            Credenciales de prueba
+          </p>
+
+          <p>
+            Email:
+            <code class="bg-slate-200 px-2 py-1 rounded text-xs">
+              afiliado{{ '@' }}prueba.com
+            </code>
+          </p>
+
+          <p class="mt-1">
+            Clave:
+            <code class="bg-slate-200 px-2 py-1 rounded text-xs">
+              Prueba2024*
+            </code>
+          </p>
+
         </div>
+
       </div>
+
     </div>
