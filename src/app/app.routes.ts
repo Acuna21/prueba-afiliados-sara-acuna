@@ -32,6 +32,10 @@ export const routes: Routes = [
     path: 'certificado',
     canActivate: [authGuard],
     loadComponent: () => import('./features/certificado/certificado.component').then(m => m.CertificadoComponent)
+  },{
+    path: 'portabilidad',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/portabilidad/portabilidad.component').then(m => m.PortabilidadComponent)
   },
   {
     path: '',

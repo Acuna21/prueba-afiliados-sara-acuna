@@ -1,0 +1,467 @@
+<div class="min-h-screen bg-gray-50">
+  <app-navbar></app-navbar>
+
+  <main class="max-w-4xl mx-auto px-4 py-8">
+ 
+    <div class="mb-12 bg-white rounded-lg shadow-md p-6">
+      <div class="flex justify-between items-center">
+        <!-- Paso 1 -->
+        <div class="flex flex-col items-center" [class.opacity-50]="currentStep() > 1">
+          <div
+            class="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold mb-2"
+            [class.bg-indigo-600]="currentStep() >= 1"
+            [class.bg-gray-300]="currentStep() < 1"
+            >
+            1
+          </div>
+          <p class="text-sm font-medium text-gray-700">Datos Personales</p>
+        </div>
+
+        <div
+          class="flex-1 h-1 mx-4 mt-6"
+          [class.bg-indigo-600]="currentStep() >= 2"
+          [class.bg-gray-300]="currentStep() < 2"
+        ></div>
+
+        <!-- Paso 2 -->
+        <div class="flex flex-col items-center" [class.opacity-50]="currentStep() > 2">
+          <div
+            class="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold mb-2"
+            [class.bg-indigo-600]="currentStep() >= 2"
+            [class.bg-gray-300]="currentStep() < 2"
+            >
+            2
+          </div>
+          <p class="text-sm font-medium text-gray-700">Datos EPS</p>
+        </div>
+
+        <div
+          class="flex-1 h-1 mx-4 mt-6"
+          [class.bg-indigo-600]="currentStep() >= 3"
+          [class.bg-gray-300]="currentStep() < 3"
+        ></div>
+
+        <!-- Paso 3 -->
+        <div class="flex flex-col items-center">
+          <div
+            class="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold mb-2"
+            [class.bg-indigo-600]="currentStep() >= 3"
+            [class.bg-gray-300]="currentStep() < 3"
+            >
+            3
+          </div>
+          <p class="text-sm font-medium text-gray-700">Confirmar</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="form" class="bg-white rounded-lg shadow-md p-8 space-y-6">
+      <!-- PASO 1: Datos Personales -->
+      @if (currentStep() === 1) {
+        <div class="space-y-6 animate-fade-in">
+          <h2 class="text-2xl font-bold text-gray-900">Datos Personales</h2>
+         
+          <div>
+            <label for="nombreAfiliado" class="block text-sm font-medium text-gray-700 mb-2">
+              Nombre del Afiliado *
+            </label>
+            <input
+              id="nombreAfiliado"
+              type="text"
+              formControlName="nombreAfiliado"
+              placeholder="Juan Pérez García"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+              [class.border-red-500]="nombreAfiliado?.invalid && nombreAfiliado?.touched"
+              />
+              @if (nombreAfiliado?.invalid && nombreAfiliado?.touched) {
+                <p class="mt-1 text-sm text-red-600">
+                  Nombre requerido (mínimo 3 caracteres)
+                </p>
+              }
+            </div>
+          
+            <div>
+              <label for="tipoDocumento" class="block text-sm font-medium text-gray-700 mb-2">
+                Tipo de Documento *
+              </label>
+              <select
+                id="tipoDocumento"
+                formControlName="tipoDocumento"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                >
+                <option value="CC">Cédula de Ciudadanía</option>
+                <option value="Pasaporte">Pasaporte</option>
+                <option value="CE">Cédula de Extranjería</option>
+              </select>
+            </div>
+        
+            <div>
+              <label for="numeroDocumento" class="block text-sm font-medium text-gray-700 mb-2">
+                Número de Documento * (6-12 dígitos)
+              </label>
+              <input
+                id="numeroDocumento"
+                type="text"
+                formControlName="numeroDocumento"
+                placeholder="1234567890"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                [class.border-red-500]="numeroDocumento?.invalid && numeroDocumento?.touched"
+                />
+                @if (numeroDocumento?.invalid && numeroDocumento?.touched) {
+                  <p class="mt-1 text-sm text-red-600">
+                    Número inválido (6-12 dígitos)
+                  </p>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- PASO 2: Datos EPS -->
+          @if (currentStep() === 2) {
+            <div class="space-y-6 animate-fade-in">
+              <h2 class="text-2xl font-bold text-gray-900">Datos de Portabilidad</h2>
+              <!-- EPS Origen -->
+              <div>
+                <label for="epsOrigen" class="block text-sm font-medium text-gray-700 mb-2">
+                  EPS Origen *
+                </label>
+                <select
+                  id="epsOrigen"
+                  formControlName="epsOrigen"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                  [class.border-red-500]="epsOrigen?.invalid && epsOrigen?.touched"
+                  >
+                  <option value="">Selecciona tu EPS actual</option>
+                  @for (eps of epsList; track eps) {
+                    <option [value]="eps">{{ eps }}</option>
+                  }
+                </select>
+                @if (epsOrigen?.invalid && epsOrigen?.touched) {
+                  <p class="mt-1 text-sm text-red-600">
+                    EPS origen requerida
+                  </p>
+                }
+              </div>
+             
+              <div>
+                <label for="epsDestino" class="block text-sm font-medium text-gray-700 mb-2">
+                  EPS Destino *
+                </label>
+                <select
+                  id="epsDestino"
+                  formControlName="epsDestino"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                  [class.border-red-500]="epsDestino?.invalid && epsDestino?.touched"
+                  >
+                  <option value="">Selecciona tu nueva EPS</option>
+                  @for (eps of epsList; track eps) {
+                    <option [value]="eps">{{ eps }}</option>
+                  }
+                </select>
+                @if (epsDestino?.invalid && epsDestino?.touched) {
+                  <p class="mt-1 text-sm text-red-600">
+                    EPS destino requerida
+                  </p>
+                }
+                @if (form.hasError('epsMisma')) {
+                  <p class="mt-1 text-sm text-red-600">
+                    ⚠️ Las EPS de origen y destino no pueden ser iguales
+                  </p>
+                }
+              </div>
+
+              <div>
+                <label for="motivoTraslado" class="block text-sm font-medium text-gray-700 mb-2">
+                  Motivo del Traslado *
+                </label>
+                <select
+                  id="motivoTraslado"
+                  formControlName="motivoTraslado"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                  >
+                  @for (motivo of motivoTraslados; track motivo) {
+                    <option [value]="motivo">{{ motivo }}</option>
+                  }
+                </select>
+              </div>
+             
+              @if (motivoTraslado?.value === 'Otro') {
+                <div>
+                  <label for="descripcionMotivo" class="block text-sm font-medium text-gray-700 mb-2">
+                    Especifica tu motivo * (mínimo 10 caracteres)
+                  </label>
+                  <textarea
+                    id="descripcionMotivo"
+                    formControlName="descripcionMotivo"
+                    rows="3"
+                    placeholder="Cuéntanos más sobre tu razón..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                    [class.border-red-500]="descripcionMotivo?.invalid && descripcionMotivo?.touched"
+                  ></textarea>
+                  @if (form.hasError('descripcionMotivoRequired')) {
+                    <p class="mt-1 text-sm text-red-600">
+                      Por favor, describe el motivo del traslado
+                    </p>
+                  }
+                </div>
+              }
+            </div>
+          }
+
+          <!-- PASO 3: Confirmación -->
+          @if (currentStep() === 3) {
+            <div class="space-y-6 animate-fade-in">
+              <h2 class="text-2xl font-bold text-gray-900">Revisar tu Solicitud</h2>
+              <div class="bg-blue-50 border-l-4 border-blue-600 p-4 rounded">
+                <p class="text-sm text-blue-700">
+                  Por favor revisa los datos antes de enviar. Una vez enviada, la solicitud será procesada por nuestro equipo.
+                </p>
+              </div>
+              <!-- Resumen -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="p-4 bg-gray-50 rounded-lg">
+                  <h3 class="font-semibold text-gray-900 mb-3">📋 Datos Personales</h3>
+                  <div class="space-y-2 text-sm text-gray-700">
+                    <p><strong>Nombre:</strong> {{ form.get('nombreAfiliado')?.value }}</p>
+                    <p><strong>Documento:</strong> {{ form.get('tipoDocumento')?.value }} - {{ form.get('numeroDocumento')?.value }}</p>
+                  </div>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-lg">
+                  <h3 class="font-semibold text-gray-900 mb-3">🔄 Cambio de EPS</h3>
+                  <div class="space-y-2 text-sm text-gray-700">
+                    <p><strong>De:</strong> {{ form.get('epsOrigen')?.value }}</p>
+                    <p><strong>A:</strong> {{ form.get('epsDestino')?.value }}</p>
+                    <p><strong>Motivo:</strong> {{ form.get('motivoTraslado')?.value }}</p>
+                  </div>
+                </div>
+                @if (form.get('descripcionMotivo')?.value) {
+                  <div class="md:col-span-2 p-4 bg-gray-50 rounded-lg">
+                    <h3 class="font-semibold text-gray-900 mb-3">📝 Detalles Adicionales</h3>
+                    <p class="text-sm text-gray-700">{{ form.get('descripcionMotivo')?.value }}</p>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <div class="flex gap-4 pt-6 border-t border-gray-200">
+            @if (currentStep() > 1) {
+              <app-button
+                label="← Anterior"
+                variant="secondary"
+                type="button"
+                (onClick)="prevStep()"
+              ></app-button>
+            }
+
+            @if (currentStep() < 3) {
+              <app-button
+                label="Siguiente →"
+                variant="primary"
+                type="button"
+                [disabled]="(currentStep() === 1 && !isStep1Valid()) || (currentStep() === 2 && !isStep2Valid())"
+                (onClick)="nextStep()"
+              ></app-button>
+            }
+
+            @if (currentStep() === 3) {
+              <app-button
+                label="Enviar Solicitud"
+                variant="primary"
+                type="submit"
+                [loading]="isLoading()"
+                (onClick)="onSubmit()"
+              ></app-button>
+            }
+          </div>
+        </form>
+
+        <!-- Historial reciente -->
+        @if (portabilidades().length > 0) {
+          <div class="mt-12 bg-white rounded-lg shadow-md p-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-6">📜 Historial de Solicitudes</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="border-b border-gray-200">
+                    <th class="text-left py-3 px-4 font-semibold text-gray-700">Afiliado</th>
+                    <th class="text-left py-3 px-4 font-semibold text-gray-700">EPS</th>
+                    <th class="text-left py-3 px-4 font-semibold text-gray-700">Fecha</th>
+                    <th class="text-left py-3 px-4 font-semibold text-gray-700">Estado</th>
+                    <th class="text-right py-3 px-4 font-semibold text-gray-700">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (port of portabilidades(); track port) {
+                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                      <td class="py-4 px-4 text-sm text-gray-900 font-medium">{{ port.nombreAfiliado }}</td>
+                      <td class="py-4 px-4 text-sm text-gray-600">
+                        <span class="text-xs">{{ port.epsOrigen }}</span>
+                        <span class="text-gray-400 mx-1">→</span>
+                        <span class="text-xs">{{ port.epsDestino }}</span>
+                      </td>
+                      <td class="py-4 px-4 text-sm text-gray-600">{{ port.fechaSolicitud | date: 'dd/MM/yyyy HH:mm' }}</td>
+                      <td class="py-4 px-4">
+                        <div class="relative group" #stateDropdown>
+                          <button
+                            class="px-3 py-1 rounded-full text-xs font-semibold cursor-pointer transition hover:opacity-80"
+                            [class.bg-gray-100]="port.estado === 'Radicada'"
+                            [class.text-gray-800]="port.estado === 'Radicada'"
+                            [class.bg-blue-100]="port.estado === 'En revisión'"
+                            [class.text-blue-800]="port.estado === 'En revisión'"
+                            [class.bg-green-100]="port.estado === 'Aprobada'"
+                            [class.text-green-800]="port.estado === 'Aprobada'"
+                            [class.bg-red-100]="port.estado === 'Negada'"
+                            [class.text-red-800]="port.estado === 'Negada'"
+                            (click)="toggleStateDropdown(port.id)"
+                          >
+                            {{ port.estado }} ▼
+                          </button>
+                          @if (openDropdownId() === port.id) {
+                            <div class="absolute right-0 mt-1 w-40 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+                              @for (estado of estadosDisponibles; track estado) {
+                                <button
+                                  class="block w-full text-left px-4 py-2 hover:bg-indigo-50 text-sm text-gray-700 first:rounded-t-lg last:rounded-b-lg"
+                                  (click)="cambiarEstado(port.id, estado); toggleStateDropdown(null)"
+                                >
+                                  {{ estado }}
+                                </button>
+                              }
+                            </div>
+                          }
+                        </div>
+                      </td>
+                      <td class="py-4 px-4 text-right">
+                        <button
+                          class="px-3 py-1 bg-indigo-600 text-white text-xs font-medium rounded hover:bg-indigo-700 transition"
+                          (click)="verDetalle(port)"
+                        >
+                          Ver detalle
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+      </main>
+
+      <!-- Success Modal -->
+      <app-modal
+        [isOpen]="showSuccessModal()"
+        title="Solicitud Enviada"
+        [message]="successMessage()"
+        (confirm)="onModalConfirm()"
+      ></app-modal>
+
+      <!-- Detail Modal -->
+      @if (showDetailModal()) {
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div class="bg-white rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+              <h2 class="text-2xl font-bold text-gray-900">Detalle de Solicitud</h2>
+              <button
+                class="text-gray-500 hover:text-gray-700 text-2xl"
+                (click)="closeDetailModal()"
+              >
+                ×
+              </button>
+            </div>
+            @if (selectedPortabilidad()) {
+              <div class="p-6 space-y-6">
+               
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <span class="mr-2">📋</span> Datos Personales
+                  </h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
+                    <div>
+                      <p class="text-sm text-gray-600 mb-1">Nombre</p>
+                      <p class="font-medium text-gray-900">{{ selectedPortabilidad()?.nombreAfiliado }}</p>
+                    </div>
+                    <div>
+                      <p class="text-sm text-gray-600 mb-1">Documento</p>
+                      <p class="font-medium text-gray-900">
+                        {{ selectedPortabilidad()?.tipoDocumento }} - {{ selectedPortabilidad()?.numeroDocumento }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Datos de Portabilidad -->
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <span class="mr-2">🔄</span> Cambio de EPS
+                  </h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
+                    <div>
+                      <p class="text-sm text-gray-600 mb-1">EPS Origen</p>
+                      <p class="font-medium text-gray-900">{{ selectedPortabilidad()?.epsOrigen }}</p>
+                    </div>
+                    <div>
+                      <p class="text-sm text-gray-600 mb-1">EPS Destino</p>
+                      <p class="font-medium text-gray-900">{{ selectedPortabilidad()?.epsDestino }}</p>
+                    </div>
+                    <div>
+                      <p class="text-sm text-gray-600 mb-1">Motivo del Traslado</p>
+                      <p class="font-medium text-gray-900">{{ selectedPortabilidad()?.motivoTraslado }}</p>
+                    </div>
+                    <div>
+                      <p class="text-sm text-gray-600 mb-1">Fecha de Solicitud</p>
+                      <p class="font-medium text-gray-900">{{ selectedPortabilidad()?.fechaSolicitud | date: 'dd/MM/yyyy HH:mm' }}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Descripción del Motivo -->
+                @if (selectedPortabilidad()?.descripcionMotivo) {
+                  <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                      <span class="mr-2">📝</span> Detalles Adicionales
+                    </h3>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                      <p class="text-gray-700 whitespace-pre-wrap">{{ selectedPortabilidad()?.descripcionMotivo }}</p>
+                    </div>
+                  </div>
+                }
+
+                <!-- Estado -->
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <span class="mr-2">📊</span> Estado
+                  </h3>
+                  <div class="bg-gray-50 p-4 rounded-lg">
+                    <p
+                      class="px-4 py-2 rounded-full text-sm font-semibold inline-block"
+                      [class.bg-gray-100]="selectedPortabilidad()?.estado === 'Radicada'"
+                      [class.text-gray-800]="selectedPortabilidad()?.estado === 'Radicada'"
+                      [class.bg-blue-100]="selectedPortabilidad()?.estado === 'En revisión'"
+                      [class.text-blue-800]="selectedPortabilidad()?.estado === 'En revisión'"
+                      [class.bg-green-100]="selectedPortabilidad()?.estado === 'Aprobada'"
+                      [class.text-green-800]="selectedPortabilidad()?.estado === 'Aprobada'"
+                      [class.bg-red-100]="selectedPortabilidad()?.estado === 'Negada'"
+                      [class.text-red-800]="selectedPortabilidad()?.estado === 'Negada'"
+                    >
+                      {{ selectedPortabilidad()?.estado }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            }
+            <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
+              <button
+                class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition font-medium"
+                (click)="closeDetailModal()"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    
