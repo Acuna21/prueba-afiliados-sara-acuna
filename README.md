@@ -4,6 +4,10 @@
 Portal web moderno para la gestión de servicios de afiliados de salud. Permite consultar certificados, solicitar cambios de EPS, gestionar cartas de derechos y registrar peticiones, quejas y reclamos (PQR).
 ---
 
+## 🔐 Despliegue enlace vercel: 
+prueba-afiliados.vercel.app
+
+
 ## 📋 Información General
 | Aspecto | Detalle |
 |--------|---------|
