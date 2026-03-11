@@ -36,6 +36,10 @@ export const routes: Routes = [
     path: 'portabilidad',
     canActivate: [authGuard],
     loadComponent: () => import('./features/portabilidad/portabilidad.component').then(m => m.PortabilidadComponent)
+  },{
+    path: 'pqr',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/pqr/listado/listado.component').then(m => m.PQRListadoComponent)
   },
   {
     path: '',
