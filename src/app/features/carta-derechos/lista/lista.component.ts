@@ -2,11 +2,11 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CartaDerechosService } from '../../../core/services/carta-derechos.service';
+import { CartaDerechosModalService } from '../../../core/services/carta-derechos-modal.service';
 import { CartaDerechos, EstadoSolicitud } from '../../../core/models/carta-derechos.model';
 import { BadgeComponent } from '../../../shared/components/badge.component';
 import { ButtonComponent } from '../../../shared/components/button.component';
 import { ModalComponent } from '../../../shared/components/modal.component';
-import { NavbarComponent } from '../../../shared/components/navbar.component';
 import { signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -18,14 +18,14 @@ import { FormsModule } from '@angular/forms';
     FormsModule,
     BadgeComponent,
     ButtonComponent,
-    ModalComponent,
-    NavbarComponent
+    ModalComponent
   ],
   templateUrl: './lista.component.html',
   styleUrls: ['./lista.component.scss']
 })
 export class CartaDerechosListaComponent implements OnInit {
   cartaService = inject(CartaDerechosService) as CartaDerechosService;
+  modalService = inject(CartaDerechosModalService) as CartaDerechosModalService;
   router = inject(Router) as Router;
 
   searchTerm = signal('');
@@ -72,18 +72,21 @@ export class CartaDerechosListaComponent implements OnInit {
   ngOnInit(): void {}
 
   onCreateNew(): void {
-    this.router.navigate(['/carta-derechos-crear']);
+    this.modalService.openCreateModal();
   }
 
   onEdit(id: number | undefined): void {
     if (id) {
-      this.router.navigate(['/carta-derechos-editar', id]);
+      const carta = this.cartaService.getById(id);
+      if (carta) {
+        this.modalService.openEditModal(carta);
+      }
     }
   }
 
   onView(id: number | undefined): void {
     if (id) {
-      this.router.navigate(['/carta-derechos-detalle', id]);
+      this.router.navigate(['/carta-derechos/detalle', id]);
     }
   }
 

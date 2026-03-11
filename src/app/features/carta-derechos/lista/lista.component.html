@@ -1,8 +1,4 @@
-<div class="min-h-screen bg-gray-50">
-  <app-navbar></app-navbar>
-
-  <main class="max-w-7xl mx-auto px-4 py-8">
-    <div class="space-y-6">
+<div class="space-y-6">
 
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
@@ -77,6 +73,7 @@
                     <td class="px-6 py-4">
                       <app-badge
                         [value]="carta.estado"
+                        [label]="carta.estado"
                         type="estado"
                       ></app-badge>
                     </td>
@@ -141,6 +138,4 @@
           (confirm)="confirmDelete()"
           (cancel)="cancelDelete()"
         ></app-modal>
-      </div>
-    </main>
-  </div>
+    </div>
