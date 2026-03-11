@@ -1,0 +1,235 @@
+<div class="min-h-screen bg-gray-50">
+  <app-navbar></app-navbar>
+
+  <main class="max-w-7xl mx-auto px-4 py-8">
+    
+    @if (successMessage()) {
+      <div class="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+        ✓ {{ successMessage() }}
+      </div>
+    }
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Form Section -->
+      <div class="md:col-span-2">
+        @if (showForm()) {
+          <div class="bg-white rounded-lg shadow-md p-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Solicitar Certificado</h1>
+            <p class="text-gray-600 mb-8">Completa el formulario para generar tu certificado de afiliación</p>
+            <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+           
+              <div>
+                <label for="nombreAfiliado" class="block text-sm font-medium text-gray-700 mb-2">
+                  Nombre del Afiliado *
+                </label>
+                <input
+                  id="nombreAfiliado"
+                  type="text"
+                  formControlName="nombreAfiliado"
+                  placeholder="Juan Pérez García"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                  [class.border-red-500]="nombreAfiliado?.invalid && nombreAfiliado?.touched"
+                  />
+                  @if (nombreAfiliado?.invalid && nombreAfiliado?.touched) {
+                    <p class="mt-1 text-sm text-red-600">
+                      Nombre requerido (mínimo 3 caracteres)
+                    </p>
+                  }
+                </div>
+               
+                <div>
+                  <label for="tipoDocumento" class="block text-sm font-medium text-gray-700 mb-2">
+                    Tipo de Documento *
+                  </label>
+                  <select
+                    id="tipoDocumento"
+                    formControlName="tipoDocumento"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                    >
+                    <option value="CC">Cédula de Ciudadanía</option>
+                    <option value="Pasaporte">Pasaporte</option>
+                    <option value="CE">Cédula de Extranjería</option>
+                  </select>
+                </div>
+               
+                <div>
+                  <label for="numeroDocumento" class="block text-sm font-medium text-gray-700 mb-2">
+                    Número de Documento * (6-12 dígitos)
+                  </label>
+                  <input
+                    id="numeroDocumento"
+                    type="text"
+                    formControlName="numeroDocumento"
+                    placeholder="1234567890"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                    [class.border-red-500]="numeroDocumento?.invalid && numeroDocumento?.touched"
+                    />
+                    @if (numeroDocumento?.invalid && numeroDocumento?.touched) {
+                      <p class="mt-1 text-sm text-red-600">
+                        Número inválido (6-12 dígitos)
+                      </p>
+                    }
+                  </div>
+                
+                  <div>
+                    <label for="fechaNacimiento" class="block text-sm font-medium text-gray-700 mb-2">
+                      Fecha de Nacimiento *
+                    </label>
+                    <input
+                      id="fechaNacimiento"
+                      type="date"
+                      [max]="today"
+                      formControlName="fechaNacimiento"
+                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                      [class.border-red-500]="fechaNacimiento?.invalid && fechaNacimiento?.touched"
+                      />
+                      @if (fechaNacimiento?.invalid && fechaNacimiento?.touched) {
+                          <p class="mt-1 text-sm text-red-600">
+                            @if (fechaNacimiento?.errors?.['required']) {
+                              Fecha requerida
+                            }
+                            @if (fechaNacimiento?.errors?.['fechaFutura']) {
+                              La fecha no puede ser futura
+                            }
+                            @if (fechaNacimiento?.errors?.['mayor120']) {
+                              La fecha no puede ser mayor a 120 años
+                            }
+                          </p>
+                        }
+                    </div>
+                 
+
+                    <div>
+                      <label for="regimenAfiliacion" class="block text-sm font-medium text-gray-700 mb-2">
+                        Régimen de Afiliación *
+                      </label>
+                      <select
+                        id="regimenAfiliacion"
+                        formControlName="regimenAfiliacion"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                        >
+                        @for (regimen of regimenes; track regimen) {
+                          <option [value]="regimen">
+                            {{ regimen }}
+                          </option>
+                        }
+                      </select>
+                    </div>
+                    <!-- EPS -->
+                    <div>
+                      <label for="eps" class="block text-sm font-medium text-gray-700 mb-2">
+                        EPS *
+                      </label>
+                      <select
+                        id="eps"
+                        formControlName="eps"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                        >
+                        <option value="">Selecciona una EPS</option>
+                        @for (eps of epsList; track eps) {
+                          <option [value]="eps">
+                            {{ eps }}
+                          </option>
+                        }
+                      </select>
+                    </div>
+               
+                    <div class="flex gap-4 pt-6 border-t border-gray-200">
+                      <app-button
+                        label="Generar Certificado"
+                        variant="primary"
+                        type="submit"
+                        [disabled]="form.invalid"
+                        [loading]="isLoading()"
+                      ></app-button>
+                    </div>
+                  </form>
+                </div>
+              }
+
+              @if (!showForm() && selectedCertificado()) {
+                <div class="bg-white rounded-lg shadow-md p-8">
+                  <div class="mb-6 flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-gray-900">Tu Certificado</h2>
+                    <app-button
+                      label="← Nueva Solicitud"
+                      variant="secondary"
+                      (onClick)="onNewCertificate()"
+                    ></app-button>
+                  </div>
+            
+                  <div class="mb-8 p-8 border-2 border-indigo-300 rounded-lg bg-indigo-50">
+                    <div class="text-center mb-6">
+                      <h3 class="text-xl font-bold text-indigo-600">CERTIFICADO DE AFILIACIÓN</h3>
+                      <p class="text-lg font-mono text-gray-700 mt-2">{{ selectedCertificado()?.numeroCertificado }}</p>
+                    </div>
+                    <p class="text-gray-800 leading-relaxed mb-8 text-center">
+                      {{ certificadoText() }}
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700 border-t pt-6">
+                      <div>
+                        <p><strong>Nombre:</strong> {{ selectedCertificado()?.nombreAfiliado }}</p>
+                        <p><strong>Documento:</strong> {{ selectedCertificado()?.numeroDocumento }}</p>
+                        <p><strong>Tipo Doc:</strong> {{ selectedCertificado()?.tipoDocumento }}</p>
+                      </div>
+                      <div>
+                        <p><strong>Régimen:</strong> {{ selectedCertificado()?.regimenAfiliacion }}</p>
+                        <p><strong>EPS:</strong> {{ selectedCertificado()?.eps }}</p>
+                        <p><strong>Fecha:</strong> {{ selectedCertificado()?.fechaSolicitud | date: 'dd/MM/yyyy' }}</p>
+                      </div>
+                    </div>
+                  </div>
+                 
+                  <div class="flex gap-4 flex-wrap">
+                    <app-button
+                      label="⬇ Descargar TXT"
+                      variant="primary"
+                      (onClick)="onDownload()"
+                    ></app-button>
+                    <app-button
+                      label="🖨 Imprimir"
+                      variant="primary"
+                      (onClick)="onPrint()"
+                    ></app-button>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Historial Section -->
+            <div class="md:col-span-1">
+              <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-4">📋 Historial</h3>
+
+                @if (certificados().length === 0) {
+                  <div class="text-gray-600 text-sm">
+                    <p>No hay certificados solicitados aún.</p>
+                  </div>
+                }
+
+                @if (certificados().length > 0) {
+                  <div class="space-y-3">
+                    @for (cert of certificados(); track cert) {
+                      <div
+                        class="p-3 border border-gray-200 rounded hover:border-indigo-300 hover:bg-indigo-50 cursor-pointer transition"
+                        [class.bg-indigo-100]="selectedCertificado()?.id === cert.id"
+                        (click)="selectCertificado(cert)"
+                        >
+                        <p class="font-mono text-sm text-indigo-600">{{ cert.numeroCertificado }}</p>
+                        <p class="text-sm text-gray-700">{{ cert.nombreAfiliado }}</p>
+                        <p class="text-xs text-gray-500">{{ cert.fechaSolicitud | date: 'dd/MM/yyyy' }}</p>
+                      </div>
+                    }
+                  </div>
+                }
+
+                <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <p class="text-xs text-blue-700">
+                    <strong>ℹ️ Total:</strong> {{ certificados().length }} certificado(s) generado(s)
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>

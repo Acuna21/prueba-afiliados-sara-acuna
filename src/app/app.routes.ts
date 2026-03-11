@@ -29,6 +29,11 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'certificado',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/certificado/certificado.component').then(m => m.CertificadoComponent)
+  },
+  {
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full'
